@@ -1,0 +1,41 @@
+@{
+    ViewBag.Title="Расписание";
+    var spec = ViewBag.Spec as List<string>;
+}
+    @*<div style="position:absolute;top: 40%;left: 40%">
+        <a asp-action="Level" asp-route-trainingFormat="Очная">Очная</a>
+        <br />
+        <br />
+        <a  asp-action="Level" asp-route-trainingFormat="Заочная">Заочная</a>
+        <br />
+        <br />
+        <a  asp-action="Level" asp-route-trainingFormat="Очно-заочная">Очно-заочная</a>
+    </div>*@
+<form asp-action="Table" asp-controller="Raspisanie" method="get">
+    <select name="trainingFormat">
+        <option>Очная</option>
+        <option>Заочная</option>
+        <option>Очно-заочная</option>
+    </select>
+    <select name="level">
+        <option>Бакалавр</option>
+        <option>Магистратура</option>
+    </select>
+    <input name="specialization" type="text" list="specialization" />
+    <select name="course">
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+        <option>4</option>
+        <option>5</option>
+    </select>
+    <datalist id="specialization">
+        @foreach (var i in spec)
+        {
+            <option value="@i">@i</option>
+        }
+    </datalist>
+    <div class="form-group">
+        <input type="submit" value="Отправить" class="btn btn-default" />
+    </div>
+</form>

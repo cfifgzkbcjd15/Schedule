@@ -1,0 +1,282 @@
+@using Schedule.Controllers
+@model Schedule.Models.Schedulee
+@{
+    ViewBag.Title = "Расписание";
+    var schedule = ViewBag.Schedule as List<Schedulee>;
+    List<string> day = new List<string> { "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье" };
+}
+<body id="shadow">
+    <style>
+        .centr {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            -moz-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            -o-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            border: 1px solid black;
+            display: none;
+            z-index:1;
+            background: rgba(128, 128, 255);
+        }
+        body{
+            font-size:13px;
+        }
+    </style>
+    <form asp-action="AddLine" asp-controller="Raspisanie" method="post">
+        <table>
+            <tr>
+                <td>
+                    <label class="control-label">День недели</label>
+                    <select asp-for="Day">
+                        <option value="2021, 1, 4">Понедельник</option>
+                        <option value="2021, 1, 5">Вторник</option>
+                        <option value="2021, 1, 6">Среда</option>
+                        <option value="2021, 1, 7">Четверг</option>
+                        <option value="2021, 1, 8">Пятница</option>
+                        <option value="2021, 1, 9">Суббота</option>
+                        <option value="2021, 1, 10">Воскресенье</option>
+                    </select>
+                    <div class="form-group">
+                        <label class="control-label">Название пары</label>
+                        <input asp-for="Lecture.Name" type="text" list="lecture" />
+                        <datalist id="lecture">
+                            @foreach (var i in schedule.Select(x => x.Lecture.Name).Distinct())
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        </datalist>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Номер подгруппы</label>
+                        <input asp-for="Group.subGroups.Name" type="number" list="subgroup" />
+                        <datalist id="subgroup">
+                            @foreach (var i in schedule.Select(x => x.Group.subGroups.Name).Distinct())
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        </datalist>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Номер группы</label>
+                        <input asp-for="Group.Name" type="number" list="group" />
+                        <datalist id="group">
+                            @foreach (var i in schedule.Select(x => x.Group.Name).Distinct())
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        </datalist>
+                    </div>
+                    <div class="form-group">
+                        <input type="time" asp-for="Time.StartDate" list="start" />
+                        -
+                        <input type="time" asp-for="Time.EndOfDate" list="end" />
+                    </div>
+
+                    
+                </td>
+                <td>
+                    <div class="form-group">
+                        <label class="control-label">Неделя</label>
+                        <select asp-for="Star">
+                            <option>Чётная</option>
+                            <option>Нечётная</option>
+                            <option>Без звёзд</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Аудитория</label>
+                        <input asp-for="Room" type="number" list="room" />
+                        <datalist id="room">
+                            @foreach (var i in schedule.Select(x => x.Room).Distinct())
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        </datalist>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Корпус</label>
+                        <input asp-for="Korpus" type="text" list="korpus" />
+                        <datalist id="korpus">
+                            @foreach (var i in schedule.Select(x => x.Korpus).Distinct())
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        </datalist>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Преподаватель</label>
+                        <input asp-for="Teachers.Name" type="text" list="teachers" />
+                        <datalist id="teachers">
+                            @foreach (var i in schedule.Select(x => x.Teachers.Name).Distinct())
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        </datalist>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Формат обучения</label>
+                        <select asp-for="FormOfTraining">
+                            <option>Очно</option>
+                            <option>Дистанционно</option>
+                        </select>
+                    </div>
+                    <input hidden asp-for="TrainingFormat" value="@ViewBag.TrainingFormat" />
+                    <input hidden asp-for="Level.Name" value="@ViewBag.Level" />
+                    <input hidden asp-for="Specialization.Name" value="@ViewBag.Specialization" />
+                    <input hidden asp-for="EducationalInstitutions.Name" value="@ViewBag.EducationalInstitutions" />
+                    <input hidden asp-for="Course" value="@ViewBag.Course" />
+                </td>
+            </tr>
+        </table>
+        <div class="form-group">
+            <input type="submit" value="Отправить" class="btn btn-default" />
+        </div>
+    </form>
+    @*s.Select(x => x.ToString("dddd").ToUpper()).Distinct().OrderByDescending(x=>x)*@
+    <div id="results">
+        <table class="table">
+            <tr>
+                @foreach (var i in day)
+                {
+
+                    <th> @i</th>
+
+                }
+            </tr>ш
+            <tr>
+                @foreach (var i in day)
+                {
+                <td>
+                    @foreach (var j in schedule.Where(x => x.Day.ToString("dddd").ToUpper() == i.ToUpper()))
+                    {
+                        var korp = "";
+                        var first = schedule.FirstOrDefault(x => x.Id == j.Id);
+                        if (j.Star == "Чётная")
+                            j.Star = "**";
+                        if (j.Star == "Нечётная")
+                            j.Star = "*";
+                        if (j.Star == "Без звёзд")
+                            j.Star = "";
+                        <br />
+                        <hr align="right" width="100%" size="2" color=" #FFD002 " />
+
+                        <button id="example_@(j.Id)_1" onclick="document.getElementById('example_@(j.Id)').style.display='block';">Изменить</button>
+                        if (j.Korpus == "Главный")
+                            korp = "";
+                        if (j.Korpus != "Главный")
+                            korp = " " + j.Korpus + " корпус";
+                <form asp-action="DelLine" asp-controller="Raspisanie" asp-route-id="@j.Id" method="post">
+                    <input type="submit" value="Удалить" class="btn btn-default" />
+                    <p style="height:50px;">
+                        @(j.Star + " " + j.Time.StartDate.ToString("t")+"-"+j.Time.EndOfDate.ToString("t") +" " + j.Lecture.Name+","+j.Teachers.Name+ korp)
+                    </p>
+                </form>
+                    <div id="example_@j.Id" class="centr">
+                            <p align="right">
+                                <button id="example_@(j.Id)_2" onclick="document.getElementById('example_@(j.Id)').style.display='none';">X</button>
+                            </p>
+                            <form asp-action="EditLine" asp-controller="Raspisanie" asp-route-id="@j.Id" method="post">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <label class="control-label">День недели</label>
+                                            <select asp-for="Day">
+                                                <option value="2021, 1, 4">Понедельник</option>
+                                                <option value="2021, 1, 5">Вторник</option>
+                                                <option value="2021, 1, 6">Среда</option>
+                                                <option value="2021, 1, 7">Четверг</option>
+                                                <option value="2021, 1, 8">Пятница</option>
+                                                <option value="2021, 1, 9">Суббота</option>
+                                                <option value="2021, 1, 10">Воскресенье</option>
+                                            </select>
+                                            <div class="form-group">
+                                                <label class="control-label">Название пары</label>
+                                                <input value="@first.Lecture.Name" asp-for="Lecture.Name" type="text" list="lecture" />
+                                                <datalist id="lecture">
+                                                    <option value="@j.Lecture.Name">@j.Lecture.Name</option>
+                                                </datalist>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">Номер подгруппы</label>
+                                                <input value="@first.Group.subGroups.Name" asp-for="Group.subGroups.Name" type="number" list="subgroup" />
+                                                <datalist id="subgroup">
+                                                    <option value="@j.Group.subGroups.Name">@j.Group.subGroups.Name</option>
+                                                </datalist>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">Номер группы</label>
+                                                <input value="@first.Group.Name" asp-for="Group.Name" type="number" list="group" />
+                                                <datalist id="group">
+                                                    <option value="@j.Group.Name">@j.Group.Name</option>
+                                                </datalist>
+                                            </div>
+                                            <div class="form-group">
+                                                <input value="@first.Time.StartDate.ToString("HH:mm")" type="time" asp-for="Time.StartDate" list="start" />-
+                                                <input value="@first.Time.EndOfDate.ToString("HH:mm")" type="time" asp-for="Time.EndOfDate" list="end" />
+                                            </div>
+
+
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <label class="control-label">Неделя</label>
+                                                <select asp-for="Star">
+                                                    <option>Чётная</option>
+                                                    <option>Нечётная</option>
+                                                    <option>Без звёзд</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">Аудитория</label>
+                                                <input value="@first.Room" asp-for="Room" type="number" list="room" />
+                                                <datalist id="room">
+                                                    <option value="@j.Room">@@j.Room</option>
+                                                </datalist>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">Корпус</label>
+                                                <input value="@first.Korpus" asp-for="Korpus" type="text" list="korpus" />
+                                                <datalist id="korpus">
+                                                    <option value="@j.Korpus">@j.Korpus</option>
+                                                </datalist>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">Преподаватель</label>
+                                                <input value="@first.Teachers.Name" asp-for="Teachers.Name" type="text" list="teachers" />
+                                                <datalist id="teachers">
+                                                    <option value="@j.Teachers.Name">@j.Teachers.Name</option>
+                                                </datalist>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">Формат обучения</label>
+                                                <select asp-for="FormOfTraining">
+                                                    <option>Очно</option>
+                                                    <option>Дистанционно</option>
+                                                </select>
+                                            </div>
+                                            <input hidden asp-for="TrainingFormat" value="@ViewBag.TrainingFormat" />
+                                            <input hidden asp-for="Level.Name" value="@ViewBag.Level" />
+                                            <input hidden asp-for="Specialization.Name" value="@ViewBag.Specialization" />
+                                            <input hidden asp-for="EducationalInstitutions.Name" value="@ViewBag.EducationalInstitutions" />
+                                            <input hidden asp-for="Course" value="@ViewBag.Course" />
+                                        </td>
+                                    </tr>
+                                </table>
+                                <div class="form-group">
+                                    <input type="submit" value="Отправить" class="btn btn-default" />
+                                </div>
+                            </form>
+                        </div>
+                    }
+                </td>
+
+
+                }
+            </tr>
+
+        </table>
+    </div>
+</body>

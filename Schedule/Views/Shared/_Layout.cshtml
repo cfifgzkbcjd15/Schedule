@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="icon" href="https://sun9-33.userapi.com/impg/C1rDRRmQHKs_HXMt6QbzH0W2SZCwL1-mD5_g5A/lKcKCMnUb0U.jpg?size=455x455&quality=96&sign=af9a8c4911629905b89472ebe422084c&type=album" />
+    <script src="https://kit.fontawesome.com/9a4928363c.js" crossorigin="anonymous"></script>
+    <script></script>
+    <style>
+        body {
+            background: #a6f9ff;
+            font-size:15px;
+        }
+
+    </style>
+</head>
+<body style=" background: white;">
+    <header>
+        <nav style="border-bottom: 1px solid #b8cadc00 !important;background-color: rgba(128, 128, 255,0.3); width: 100%; " class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom  mb-3">
+            <div class="container" style="width:100%;">
+                <a class="navbar-brand" style="color: rgb(108 108 255);" asp-area="" asp-controller="Home" asp-action="Index">Главная</a>
+                <ul class="navbar-nav flex-grow-1">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Raspisanie" asp-action="Index">Расписание</a>
+                        </li>
+                        <li class="nav-item" style="margin-left:auto">
+                            <form method="post" asp-controller="Account" asp-action="Logout">
+                                <label class="upload-file__label" for="upload-file__input_output">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                </label>
+                                <input hidden id="upload-file__input_output" type="submit" value="Выход" />
+                            </form>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item" style="margin-left:auto">
+                            <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Вход</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Регистрация</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container" style=" border-radius: 10px; height: 100%; min-height: 525px; background-color: rgba(128, 128, 255,0.3); ">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy;<a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
